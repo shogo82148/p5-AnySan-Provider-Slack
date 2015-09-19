@@ -70,9 +70,9 @@ sub event_callback {
 
     if ($type eq 'reply') {
         $self->_call('chat.postMessage', [
-            as_user => 'true',
             channel => $receive->attribute('channel'),
             text    => $args[0],
+            as_user => $self->{config}->{as_user} ? 'true' : 'false',
         ], sub {});
     }
 }
@@ -81,9 +81,9 @@ sub send_message {
     my($self, $message, %args) = @_;
 
     $self->_call('chat.postMessage', [
-        as_user => 'true',
         text    => $message,
         channel => $args{channel},
+        as_user => $self->{config}->{as_user} ? 'true' : 'false',
         %{ $args{params} || +{} },
     ], sub {});
 }
