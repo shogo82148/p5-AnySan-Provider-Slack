@@ -1,8 +1,8 @@
 use strict;
-use Test::More;
+use Test::More 0.98;
 
 use_ok $_ for qw(
-    p5::AnySan::Provider::Slack
+    AnySan::Provider::Slack
 );
 
 done_testing;
