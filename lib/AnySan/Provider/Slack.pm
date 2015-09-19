@@ -45,7 +45,8 @@ sub slack {
         my ($rtm, $message) = @_;
         use DDP; p $message;
         my $authinfo = $self->{authinfo} or return;
-        return if $message->{user} eq $authinfo->{user_id};
+        return if $message->{subtype} && $message->{subtype} eq 'bot_message';
+        return if $message->{user} && $message->{user} eq $authinfo->{user_id};
         my $receive; $receive = AnySan::Receive->new(
             provider      => 'slack',
             event         => 'message',
