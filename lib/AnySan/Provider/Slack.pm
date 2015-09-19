@@ -96,10 +96,11 @@ sub _call {
         @$params,
     ];
     my %headers = map { $_ => $req->header($_), } $req->headers->header_field_names;
+    my $jd = $self->{json_driver} ||= JSON->new;
     my $r;
     $r = http_post $req->uri, $req->content, headers => \%headers, sub {
         my $body = shift;
-        my $res = decode_json($body);
+        my $res = $jd->decode($body);
         $cb->($res);
         undef $r;
     };
