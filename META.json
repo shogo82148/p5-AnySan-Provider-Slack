@@ -1,10 +1,10 @@
 {
-   "abstract" : "It's new $module",
+   "abstract" : "AnySan provider for Slack",
    "author" : [
-      "@gmail.com>"
+      "Ichinose Shogo <shogo82148@gmail.com >"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Minilla/v2.5.0, CPAN::Meta::Converter version 2.150005",
+   "generated_by" : "Minilla/v2.1.1, CPAN::Meta::Converter version 2.142060",
    "license" : [
       "perl_5"
    ],
@@ -42,6 +42,9 @@
       },
       "runtime" : {
          "requires" : {
+            "AnyEvent::HTTP" : "0",
+            "AnyEvent::SlackRTM" : "0",
+            "AnySan" : "0",
             "perl" : "5.008001"
          }
       },
@@ -52,7 +55,20 @@
       }
    },
    "release_status" : "unstable",
+   "resources" : {
+      "bugtracker" : {
+         "web" : "https://github.com/shogo82148/p5-AnySan-Provider-Slack/issues"
+      },
+      "homepage" : "https://github.com/shogo82148/p5-AnySan-Provider-Slack",
+      "repository" : {
+         "type" : "git",
+         "url" : "git://github.com/shogo82148/p5-AnySan-Provider-Slack.git",
+         "web" : "https://github.com/shogo82148/p5-AnySan-Provider-Slack"
+      }
+   },
    "version" : "0.01",
    "x_authority" : "cpan:SHOGO",
-   "x_serialization_backend" : "JSON::PP version 2.27203"
+   "x_contributors" : [
+      "Ichinose Shogo <shogo82148@gmail.com>"
+   ]
 }

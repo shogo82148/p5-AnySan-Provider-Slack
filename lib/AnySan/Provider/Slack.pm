@@ -1,6 +1,8 @@
 package AnySan::Provider::Slack;
 use strict;
 use warnings;
+our $VERSION = '0.01';
+
 use base 'AnySan::Provider';
 our @EXPORT = qw(slack);
 use AnySan;
@@ -106,4 +108,34 @@ sub _call {
 }
 
 1;
+__END__
 
+=head1 NAME
+
+AnySan::Provider::Slack - AnySan provider for Slack
+
+=head1 SYNOPSIS
+
+  use AnySan;
+  use AnySan::Provider::Slack;
+  my $slack = slack
+      token => 'YOUR SLACK API TOKEN',
+      channels => {
+          'general' => {},
+      };
+  $slack->send_message('slack message', channel => 'C024BE91L');
+
+=head1 AUTHOR
+
+Ichinose Shogo E<lt>shogo82148@gmail.com E<gt>
+
+=head1 SEE ALSO
+
+L<AnySan>, L<AnyEvent::IRC::Client>, L<Slack API|https://api.slack.com/>
+
+=head1 LICENSE
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=cut
