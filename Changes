@@ -1,6 +1,8 @@
 Revision history for Perl extension AnySan-Provider-Slack
 
 {{$NEXT}}
+
+0.02 2015-09-24T13:49:00Z
     - fix encoding
 
 0.01 2015-09-24T09:27:59Z
