@@ -52,9 +52,9 @@ sub slack {
         my $receive; $receive = AnySan::Receive->new(
             provider      => 'slack',
             event         => 'message',
-            message       => encode_utf8($message->{text} // ''),
-            nickname      => encode_utf8($authinfo->{user} // ''),
-            from_nickname => encode_utf8($message->{user} // ''),
+            message       => encode_utf8($message->{text} || ''),
+            nickname      => encode_utf8($authinfo->{user} || ''),
+            from_nickname => encode_utf8($message->{user} || ''),
             attribute     => {
                 channel => $message->{channel},
             },
