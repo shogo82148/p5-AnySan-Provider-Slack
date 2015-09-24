@@ -114,6 +114,8 @@ __END__
 
 AnySan::Provider::Slack - AnySan provider for Slack
 
+B<THE SOFTWARE IS ALPHA QUALITY. API MAY CHANGE WITHOUT NOTICE.>
+
 =head1 SYNOPSIS
 
   use AnySan;
