@@ -9,6 +9,7 @@ use HTTP::Request::Common;
 use AnyEvent::HTTP;
 use AnyEvent::SlackRTM;
 use JSON;
+use Encode;
 
 sub slack {
     my(%config) = @_;
@@ -49,9 +50,9 @@ sub slack {
         my $receive; $receive = AnySan::Receive->new(
             provider      => 'slack',
             event         => 'message',
-            message       => $message->{text},
-            nickname      => $authinfo->{user},
-            from_nickname => $message->{user},
+            message       => encode_utf8($message->{text} // ''),
+            nickname      => encode_utf8($authinfo->{user} // ''),
+            from_nickname => encode_utf8($message->{user} // ''),
             attribute     => {
                 channel => $message->{channel},
             },
@@ -95,7 +96,7 @@ sub _call {
         @$params,
     ];
     my %headers = map { $_ => $req->header($_), } $req->headers->header_field_names;
-    my $jd = $self->{json_driver} ||= JSON->new;
+    my $jd = $self->{json_driver} ||= JSON->new->utf8;
     my $r;
     $r = http_post $req->uri, $req->content, headers => \%headers, sub {
         my $body = shift;
