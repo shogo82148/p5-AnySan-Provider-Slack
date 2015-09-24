@@ -2,6 +2,8 @@
 
 AnySan::Provider::Slack - AnySan provider for Slack
 
+**THE SOFTWARE IS ALPHA QUALITY. API MAY CHANGE WITHOUT NOTICE.**
+
 # SYNOPSIS
 
     use AnySan;
