@@ -38,7 +38,7 @@ sub slack {
     my $rtm = AnyEvent::SlackRTM->new($config{token});
     $rtm->on('hello' => sub {
         $self->{keep_alive} = AnyEvent->timer(
-            interval => 60,
+            interval => 29,
             cb => sub {
                 $rtm->ping;
             },
