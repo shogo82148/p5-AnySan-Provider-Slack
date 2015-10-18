@@ -45,8 +45,10 @@ sub start {
     $rtm->on('message' => sub {
         my ($rtm, $message) = @_;
         my $metadata = $self->metadata or return;
-        return if $message->{subtype} && $message->{subtype} eq 'bot_message';
-        return if $message->{user} && $message->{user} eq $metadata->{self}{id};
+        if ($message->{subtype}) {
+            my $filter = $self->{config}{subtypes} || [];
+            return unless grep { $_ eq 'all' || $_ eq $message->{subtype} } @$filter;
+        }
         my $receive; $receive = AnySan::Receive->new(
             provider      => 'slack',
             event         => 'message',
@@ -55,6 +57,7 @@ sub start {
             from_nickname => encode_utf8($message->{user} || ''),
             attribute     => {
                 channel => $message->{channel},
+                subtype => $message->{subtype},
             },
             cb            => sub { $self->event_callback($receive, @_) },
         );
@@ -125,11 +128,19 @@ B<THE SOFTWARE IS ALPHA QUALITY. API MAY CHANGE WITHOUT NOTICE.>
 
   use AnySan;
   use AnySan::Provider::Slack;
-  my $slack = slack
+  my $slack = slack(
       token => 'YOUR SLACK API TOKEN',
       channels => {
           'general' => {},
-      };
+      },
+
+      as_user => 0, # post messages as bot (default)
+      # as_user => 1, # post messages as user
+
+      subtypes => [], # ignore all subtypes (default)
+      # subtypes => ['bot_message'], # receive messages from bot
+      # subtypes => ['all'], # receive all messages(bot_message, me_message, message_changed, etc)
+  );
   $slack->send_message('slack message', channel => 'C024BE91L');
 
 =head1 AUTHOR
