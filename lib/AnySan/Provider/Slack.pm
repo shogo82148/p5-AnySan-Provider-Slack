@@ -29,25 +29,19 @@ sub slack {
         ], sub {});
     }
 
-    # get auth info
-    $self->_call('auth.test', [], sub {
-        my $res = shift;
-        $self->{authinfo} = $res;
-    });
-
     my $rtm = AnyEvent::SlackRTM->new($config{token});
     $rtm->on('hello' => sub {
     });
     $rtm->on('message' => sub {
         my ($rtm, $message) = @_;
-        my $authinfo = $self->{authinfo} or return;
+        my $metadata = $self->metadata or return;
         return if $message->{subtype} && $message->{subtype} eq 'bot_message';
-        return if $message->{user} && $message->{user} eq $authinfo->{user_id};
+        return if $message->{user} && $message->{user} eq $metadata->{self}{id};
         my $receive; $receive = AnySan::Receive->new(
             provider      => 'slack',
             event         => 'message',
             message       => encode_utf8($message->{text} || ''),
-            nickname      => encode_utf8($authinfo->{user} || ''),
+            nickname      => encode_utf8($metadata->{self}{name} || ''),
             from_nickname => encode_utf8($message->{user} || ''),
             attribute     => {
                 channel => $message->{channel},
@@ -61,6 +55,8 @@ sub slack {
 
     return $self;
 }
+
+sub metadata { shift->{rtm}->metadata }
 
 sub event_callback {
     my($self, $receive, $type, @args) = @_;
