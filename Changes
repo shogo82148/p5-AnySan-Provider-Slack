@@ -1,6 +1,9 @@
 Revision history for Perl extension AnySan-Provider-Slack
 
 {{$NEXT}}
+    - support reconnect
+    - support subtype fileter of messages
+    - do not use auth.test api
 
 0.02 2015-09-24T13:49:00Z
     - fix encoding
