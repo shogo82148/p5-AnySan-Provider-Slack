@@ -143,6 +143,19 @@ B<THE SOFTWARE IS ALPHA QUALITY. API MAY CHANGE WITHOUT NOTICE.>
   );
   $slack->send_message('slack message', channel => 'C024BE91L');
 
+  AnySan->register_listener(
+      slack => {
+          event => 'message',
+          cb => sub {
+              my $receive = shift;
+              return unless $receive->message;
+              warn $receive->message;
+              warn $receive->attribute->{subtype};
+              $receive->send_reply('hogehoge');
+          },
+      },
+  );
+
 =head1 AUTHOR
 
 Ichinose Shogo E<lt>shogo82148@gmail.com E<gt>
