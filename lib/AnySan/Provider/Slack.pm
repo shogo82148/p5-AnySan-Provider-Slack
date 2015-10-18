@@ -29,7 +29,17 @@ sub slack {
         ], sub {});
     }
 
-    my $rtm = AnyEvent::SlackRTM->new($config{token});
+    $self->start;
+
+    return $self;
+}
+
+sub metadata { shift->{rtm}->metadata }
+
+sub start {
+    my $self = shift;
+
+    my $rtm = AnyEvent::SlackRTM->new($self->{config}{token});
     $rtm->on('hello' => sub {
     });
     $rtm->on('message' => sub {
@@ -50,13 +60,17 @@ sub slack {
         );
         AnySan->broadcast_message($receive);
     });
+    $rtm->on('finish' => sub {
+        # reconnect
+        undef $self->{rtm};
+        while (1) {
+            eval { $self->start };
+            last unless $@;
+        }
+    });
     $rtm->start;
     $self->{rtm} = $rtm;
-
-    return $self;
 }
-
-sub metadata { shift->{rtm}->metadata }
 
 sub event_callback {
     my($self, $receive, $type, @args) = @_;
