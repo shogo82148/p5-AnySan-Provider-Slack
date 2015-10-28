@@ -106,6 +106,21 @@ sub start {
             last unless $@;
         }
     });
+    $rtm->on('user_change' => sub {
+        my ($rtm, $message) = @_;
+        my $user = $message->{user};
+        my $user_id = $user->{id};
+
+        # remove from cache
+        if (my $old_user = $self->{_users}{$user_id}) {
+            delete $self->{_users}{$user_id};
+            delete $self->{_users}{$old_user->{name}};
+        }
+
+        # add new user info to cache
+        $self->{_users}{$user_id} = $user;
+        $self->{_users}{$user->{name}} = $user;
+    });
     $rtm->start;
     $self->{rtm} = $rtm;
 }
