@@ -36,11 +36,35 @@ sub slack {
 
 sub metadata { shift->{rtm}->metadata }
 
+sub user {
+    my ($self, $id) = @_;
+    return $self->{_users}{$id};
+}
+
+sub bot {
+    my ($self, $id) = @_;
+    return $self->{_bots}{$id};
+}
+
 sub start {
     my $self = shift;
 
     my $rtm = AnyEvent::SlackRTM->new($self->{config}{token});
     $rtm->on('hello' => sub {
+        # create hash table of users
+        my $users = {};
+        for my $user (@{$self->metadata->{users}}) {
+            $users->{$user->{id}} ||= $user;
+            $users->{$user->{name}} ||= $user;
+        }
+        $self->{_users} = $users;
+
+        my $bots = {};
+        for my $bot (@{$self->metadata->{bots}}) {
+            $bots->{$bot->{id}} ||= $bot;
+            $bots->{$bot->{name}} ||= $bot;
+        }
+        $self->{_bots} = $bots;
     });
     $rtm->on('message' => sub {
         my ($rtm, $message) = @_;
@@ -49,15 +73,26 @@ sub start {
             my $filter = $self->{config}{subtypes} || [];
             return unless grep { $_ eq 'all' || $_ eq $message->{subtype} } @$filter;
         }
+
+        # search user nickname
+        my $nickname = '';
+        my $user_id = encode_utf8($message->{user} || '');
+        my $user = $self->user($user_id);
+        my $bot = $self->bot($user_id);
+        $nickname = $user->{name} if $user;
+        $nickname = $bot->{name} if $bot;
+
         my $receive; $receive = AnySan::Receive->new(
             provider      => 'slack',
             event         => 'message',
             message       => encode_utf8($message->{text} || ''),
             nickname      => encode_utf8($metadata->{self}{name} || ''),
-            from_nickname => encode_utf8($message->{user} || ''),
+            from_nickname => $nickname,
             attribute     => {
                 channel => $message->{channel},
                 subtype => $message->{subtype},
+                user    => $user,
+                bot     => $bot,
             },
             cb            => sub { $self->event_callback($receive, @_) },
         );
@@ -70,6 +105,21 @@ sub start {
             eval { $self->start };
             last unless $@;
         }
+    });
+    $rtm->on('user_change' => sub {
+        my ($rtm, $message) = @_;
+        my $user = $message->{user};
+        my $user_id = $user->{id};
+
+        # remove from cache
+        if (my $old_user = $self->{_users}{$user_id}) {
+            delete $self->{_users}{$user_id};
+            delete $self->{_users}{$old_user->{name}};
+        }
+
+        # add new user info to cache
+        $self->{_users}{$user_id} = $user;
+        $self->{_users}{$user->{name}} = $user;
     });
     $rtm->start;
     $self->{rtm} = $rtm;
