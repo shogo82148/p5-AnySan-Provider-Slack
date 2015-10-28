@@ -37,12 +37,12 @@ sub slack {
 sub metadata { shift->{rtm}->metadata }
 
 sub user {
-    my ($self, $id) = shift;
+    my ($self, $id) = @_;
     return $self->{_users}{$id};
 }
 
 sub bot {
-    my ($self, $id) = shift;
+    my ($self, $id) = @_;
     return $self->{_bots}{$id};
 }
 
