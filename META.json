@@ -66,7 +66,7 @@
          "web" : "https://github.com/shogo82148/p5-AnySan-Provider-Slack"
       }
    },
-   "version" : "0.03",
+   "version" : "0.04",
    "x_authority" : "cpan:SHOGO",
    "x_contributors" : [
       "Ichinose Shogo <shogo82148@gmail.com>"
