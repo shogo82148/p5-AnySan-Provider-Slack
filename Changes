@@ -1,6 +1,7 @@
 Revision history for Perl extension AnySan-Provider-Slack
 
 {{$NEXT}}
+    - `from_nickname` is user name now, not user id
 
 0.03 2015-10-18T05:53:07Z
     - support reconnect
