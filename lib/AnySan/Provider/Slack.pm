@@ -130,9 +130,10 @@ sub event_callback {
 
     if ($type eq 'reply') {
         $self->_call('chat.postMessage', [
-            channel => $receive->attribute('channel'),
-            text    => $args[0],
-            as_user => $self->{config}->{as_user} ? 'true' : 'false',
+            channel    => $receive->attribute('channel'),
+            text       => $args[0],
+            as_user    => $self->{config}->{as_user}    ? 'true' : 'false',
+            link_names => $self->{config}->{link_names} ? 'true' : 'false',
         ], sub {});
     }
 }
@@ -141,9 +142,10 @@ sub send_message {
     my($self, $message, %args) = @_;
 
     $self->_call('chat.postMessage', [
-        text    => $message,
-        channel => $args{channel},
-        as_user => $self->{config}->{as_user} ? 'true' : 'false',
+        text       => $message,
+        channel    => $args{channel},
+        as_user    => $self->{config}->{as_user}    ? 'true' : 'false',
+        link_names => $self->{config}->{link_names} ? 'true' : 'false',
         %{ $args{params} || +{} },
     ], sub {});
 }
