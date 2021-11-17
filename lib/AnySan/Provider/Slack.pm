@@ -49,7 +49,8 @@ sub bot {
 sub start {
     my $self = shift;
 
-    my $rtm = AnyEvent::SlackRTM->new($self->{config}{token});
+    my $client_opt = $self->{config}{timeout} ? { timeout => $self->{config}{timeout} } : undef;
+    my $rtm = AnyEvent::SlackRTM->new($self->{config}{token}, $client_opt);
     $rtm->on('hello' => sub {
         # create hash table of users
         my $users = {};
